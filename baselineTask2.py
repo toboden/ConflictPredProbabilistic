@@ -64,7 +64,7 @@ def check_last_nMonths(n, country_id, yearindex):
         return last_n_months
         #return True
 
-def NBinomFit(featureSeries, w, quantiles):
+def nBinom_quantiles(featureSeries, w, quantiles):
         if w == 'None':
              # calculate n (r) and p via average/variance
             mean = pd.Series.mean(featureSeries)
@@ -227,7 +227,7 @@ for i in range(number_w):
             window_features = features.loc[(slice(starting_month_window, ending_month_window), slice(None)), 'ged_sb']
             window_actuals = features.loc[(slice(starting_month_actuals, ending_month_actuals), slice(None)), 'ged_sb']
 
-            predict = NBinomFit(window_features, 'None', quantiles)
+            predict = nBinom_quantiles(window_features, 'None', quantiles)
             
             baseline_estimate_list[i]['country_predict_list'][index]['predictionWindowsN'].append(
                 [{'country_id':country, 'w':w, 'dist':predict['dist'], 
@@ -483,7 +483,7 @@ for index in range(number_countries):
             # baseline 1
             if j == 0:
                 w = w_minimization_list[i]['minWData'][j].loc[0,'w'] # use the w obtained by minimization on the feature dataset
-                fit = NBinomFit(features, w, quantiles) # calculate the quantiles for the w
+                fit = nBinom_quantiles(features, w, quantiles) # calculate the quantiles for the w
 
                 dummy_crps_list = []
                 for s in s_prediction_list:
@@ -504,7 +504,7 @@ for index in range(number_countries):
             elif j == 1:
                 if country == w_minimization_list[i]['minWData'][j].loc[index,'country_id']:
                     w = w_minimization_list[i]['minWData'][j].loc[index,'w']
-                    fit = NBinomFit(features, w, quantiles) # calculate the quantiles for the w
+                    fit = nBinom_quantiles(features, w, quantiles) # calculate the quantiles for the w
 
                     dummy_crps_list = []
                     for s in s_prediction_list:
@@ -528,7 +528,7 @@ for index in range(number_countries):
             elif j == 2:
                 for s in s_prediction_list:
                     w = w_minimization_list[i]['minWData'][j].loc[s-3,'w']
-                    fit = NBinomFit(features, w, quantiles) # calculate the quantiles for the w
+                    fit = nBinom_quantiles(features, w, quantiles) # calculate the quantiles for the w
 
                     true_obs = actuals.iloc[s-3,0] # true observation of the month s
                     NB_prediction = fit['fatalities'] # value of the quantiles
@@ -547,7 +547,7 @@ for index in range(number_countries):
                 if country == w_minimization_list[i]['minWData'][j][index].loc[0,'country_id']:
                     for s in s_prediction_list:
                         w = w_minimization_list[i]['minWData'][j][index].loc[s-3,'w']
-                        fit = NBinomFit(features, w, quantiles) # calculate the quantiles for the w
+                        fit = nBinom_quantiles(features, w, quantiles) # calculate the quantiles for the w
 
                         true_obs = actuals.iloc[s-3,0] # true observation of the month s
                         NB_prediction = fit['fatalities'] # value of the quantiles
