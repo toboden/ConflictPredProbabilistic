@@ -16,14 +16,16 @@ actual_years = ['2018','2019','2020','2021']
 actuals_df_list = []
 features_df_list = []
 
-for i in range(len(feature_years)):
-    # paths to the data
-    absolute_path = os.path.abspath('')
-    relative_path_features = "data\cm_features_to_oct" + feature_years[i] + ".parquet"
-    relative_path_actuals = "data\cm_actuals_" + actual_years[i] + ".parquet"
+# path to the current directory
+current_dir = os.getcwd()
 
-    path_features = os.path.join(absolute_path, relative_path_features)
-    path_actuals = os.path.join(absolute_path, relative_path_actuals)
+for i in range(len(feature_years)):
+    # relative paths to the parquet files
+    relative_path_features = os.path.join('..', 'data', 'cm_features_to_oct' + feature_years[i] + '.parquet')
+    relative_path_actuals = os.path.join('..', 'data', 'cm_actuals_' + actual_years[i] + '.parquet')
+
+    path_features = os.path.join(current_dir, relative_path_features)
+    path_actuals = os.path.join(current_dir, relative_path_actuals)
 
     # append datasets to the lists
     actuals_df_list.append({'year':actual_years[i], 'data':pd.read_parquet(path_actuals, engine='pyarrow')})
